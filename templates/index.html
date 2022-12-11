@@ -42,13 +42,13 @@
           
           {% endif %}
           {% if request.user.username == blog.user.username %}
-          <button type="button" class="btn btn-outline-dark" data-bs-toggle="modal" data-bs-target="#myUpdateModal">
+          <button type="button" class="btn btn-outline-dark" data-bs-toggle="modal" data-bs-target="#myModal">
             Update Blog
           </button>
           
           {% endif %}
           {% if request.user.is_authenticated %}
-          <button type="button" class="btn btn-outline-dark" data-bs-toggle="modal" data-bs-target="#myCreateModal">
+          <button type="button" class="btn btn-outline-dark" data-bs-toggle="modal" data-bs-target="#myModal">
             New Blog
           </button>
           {% endif %}
@@ -194,8 +194,8 @@
   </div>
 </div>
 </div>
-<!-- Create -->
-<div class="modal" id="myCreateModal">
+<!-- The Modal -->
+<div class="modal" id="myModal">
   <div class="modal-dialog modal-xl">
     <div class="modal-content">
 
@@ -207,7 +207,7 @@
 
       <!-- Modal body -->
       <div class="modal-body">
-        <form method="POST">
+        <form method="POST" enctype="multipart/form-data">
           {% csrf_token %}
           {{form}}
           {{form.media}}
@@ -225,22 +225,23 @@
 </div>
 
 <!-- Update -->
-<div class="modal" id="myUpdateModal">
+<div class="modal" id="myModal">
   <div class="modal-dialog modal-xl">
     <div class="modal-content">
 
       <!-- Modal Header -->
       <div class="modal-header">
-        <h4 class="modal-title">Update Blog</h4>
+        <h4 class="modal-title">Create Blog</h4>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
 
       <!-- Modal body -->
       <div class="modal-body">
-        <form method="POST">
+        <form method="POST" enctype="multipart/form-data">
           {% csrf_token %}
-          {{updateForm}}
-          {{updateForm.media}}
+          {{form}}
+          {{form.media}}
+
       </div>
 
       <div class="modal-footer">

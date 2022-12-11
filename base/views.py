@@ -13,7 +13,6 @@ def index(request, id):
     form = BlogForm()
     blog = {}
     message = {}
-    updateForm = {}
     try:
         blog = BlogModel.objects.get(id=id)
     except:
@@ -45,7 +44,6 @@ def index(request, id):
         print('Error')
     return render(request, 'index.html', {
         'form': form,
-        'updateForm': updateForm, 
         'data': BlogModel.objects.all(),
         'blog': blog,
         'comments': comments
