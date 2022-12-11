@@ -7,7 +7,11 @@
       <ul class="list-group">
         {% for x in data %}
         <a href="{% url 'home2' x.id %}" style="text-decoration: none;">
-          <li class="list-group-item item">{{x.title}}</li>
+          {% if request.path|slugify|cut:'/' == x.id|slugify %}
+            <li class="list-group-item item active">{{x.title}}</li>
+            {% else %}
+            <li class="list-group-item item">{{x.title}}</li>
+          {% endif %}
         </a>
         {% endfor %}
         <style>
@@ -32,12 +36,19 @@
         
         <div>
           {% if request.path|slugify|cut:'/' != "1" and request.user.username == blog.user.username %}
-          <a href="{% url 'blog-delete' request.path|slugify|cut:'/' %}" class="btn btn-outline-dark">
-            Delete This Blog
-          </a>
+            <a type="submit" href="{% url 'blog-delete' request.path|slugify|cut:'/' %}" class="btn btn-outline-dark">
+              Delete This Blog
+            </a>
+          
+          {% endif %}
+          {% if request.user.username == blog.user.username %}
+          <button type="button" class="btn btn-outline-dark" data-bs-toggle="modal" data-bs-target="#myUpdateModal">
+            Update Blog
+          </button>
+          
           {% endif %}
           {% if request.user.is_authenticated %}
-          <button type="button" class="btn btn-outline-dark" data-bs-toggle="modal" data-bs-target="#myModal">
+          <button type="button" class="btn btn-outline-dark" data-bs-toggle="modal" data-bs-target="#myCreateModal">
             New Blog
           </button>
           {% endif %}
@@ -52,7 +63,6 @@
       <p>Welcome to My Blog. {% lorem 2 b random %}</p>
       {% endif %}
       <hr>
-      {% if request.path|slugify|cut:'/' != "1" and request.user.is_authenticated %}
       <div class="container mt-5">
         <div class="row  d-flex justify-content-center">
           <div class="col-md-12">
@@ -76,7 +86,6 @@
                   <span class="text-primary">Comments "ON"</span>
                   <div class="form-check form-switch">
                     <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" checked>
-
                   </div>
                 </span>
               </div>
@@ -93,7 +102,7 @@
             </div>
             <div class="action d-flex justify-content-between mt-2 align-items-center">
               <div class="reply px-4">
-                {% if request.user.username == blog.user.username %}
+                {% if request.user == x.user %}
                   <small>Remove</small>
                 {% endif %}
                 <span class="dots"></span>
@@ -110,7 +119,7 @@
           {% endfor %}
 
         </div>
-        {% endif %}
+        
 
       </div>
     </div>
@@ -185,8 +194,8 @@
   </div>
 </div>
 </div>
-<!-- The Modal -->
-<div class="modal" id="myModal">
+<!-- Create -->
+<div class="modal" id="myCreateModal">
   <div class="modal-dialog modal-xl">
     <div class="modal-content">
 
@@ -198,7 +207,7 @@
 
       <!-- Modal body -->
       <div class="modal-body">
-        <form method="POST" enctype="multipart/form-data">
+        <form method="POST">
           {% csrf_token %}
           {{form}}
           {{form.media}}
@@ -214,4 +223,34 @@
     </div>
   </div>
 </div>
+
+<!-- Update -->
+<div class="modal" id="myUpdateModal">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Update Blog</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+        <form method="POST">
+          {% csrf_token %}
+          {{updateForm}}
+          {{updateForm.media}}
+      </div>
+
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-success" data-bs-dismiss="modal">Create</button>
+
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 {% endblock %}
